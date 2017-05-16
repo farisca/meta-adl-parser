@@ -1,8 +1,8 @@
 {
-  function buildBinaryExpression(head, tail) {
+  function buildBinaryExpression(name, head, tail) {
     return tail.reduce(function(result, element) {
       return {
-        type: "BinaryExpression",
+        type: name,
         operator: element[1],
         left: result,
         right: element[3]
@@ -22,30 +22,49 @@ Program
   = s:Statement+ "\n"*  { return s;}
 
 Statement
-  = component:ComponentName _ DefinitionOperator _ expression:(Statement / Expression) { return {component: component.join(""), definition: true, expression: expression };}
-  / component:ComponentName _ AssignmentOperator _ expression:(Statement / Expression) { return {component: component.join(""), definition: false, expression: expression };}
-
+  = left:BasicComponent _
+    DefinitionOperator _
+    right:((Statement / Expression))
+    {
+      return {
+        type: "DefinitionExpression",
+        operator: ":=",
+        left: left,
+        right: right
+      };
+    }
+  / left:BasicComponent _
+    AssignmentOperator _
+    right:(Statement / Expression)
+    {
+      return {
+        type: "AssignmentExpression",
+        operator: ":=",
+        left: left,
+        right: right
+      };
+    }
 Expression
   = _ b:ORExpression _ { return b; }
 
 ORExpression
   = head:ANDExpression
     tail:(_ '||' _ ANDExpression)*
-    { return buildBinaryExpression(head, tail); }
+    { return buildBinaryExpression("OrExpression", head, tail); }
   / ADDExpression
 
 ANDExpression
   = head:PrimaryExpression
     tail:(_ '&&' _ PrimaryExpression)*
-    { return buildBinaryExpression(head, tail); }
+    { return buildBinaryExpression("AndExpression", head, tail); }
 
 ADDExpression
   = head:PrimaryTerm
     tail:(_ ('+' / '-') _ PrimaryTerm)*
-    { return buildBinaryExpression(head, tail); }
+    { return buildBinaryExpression("AddExpression", head, tail); }
 
 PrimaryTerm
-  = component:ComponentName { return {type: 'Component', name: component.join("") };}
+  = component:BasicComponent { return component;}
   / set:SetTerm { return set; }
 
 PrimaryExpression
@@ -59,8 +78,12 @@ AtomExpression
 SetTerm
   = "[" head:Expression tail:(_ "," _ Expression)* "]" { return {type: 'SetExpression', elements: buildList(head, tail, 3)};}
 
-ComponentName "term"
-  = [a-zA-Z\_\$0-9]+
+BasicComponent "term"
+  = component:[a-zA-Z\_0-9]+ { return {type: 'BasicComponent', name: component.join("") };}
+  / CompoundComponent
+
+CompoundComponent "term"
+  = component:[a-zA-Z\_\$0-9]+ { return {type: 'CompoundComponent', name: component.join("") };}
 
 _ "whitespace"
   = [ \t\n\r]*
