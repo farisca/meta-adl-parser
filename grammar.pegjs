@@ -45,23 +45,16 @@ Program
   = s:Statement+ "\n"*  { return s;}
 
 Statement
-  = left:Component _
-    DefinitionOperator _
-    right:Expression
-    { return buildStatement(left, right);} 
+  = left:Component _ DefinitionOperator _ right:Expression { return buildStatement(left, right);} 
   
 Expression
   = _ expression:ORExpression _ { return expression; }
 
 ORExpression
-  = head:ANDExpression
-    tail:(_ '||' _ ANDExpression)*
-    { return buildBinaryExpression("OrExpression", head, tail); }
+  = head:ANDExpression tail:(_ '||' _ ANDExpression)* { return buildBinaryExpression("OrExpression", head, tail); }
 
 ANDExpression
-  = head:NotExpression
-    tail:(_ '&&' _ NotExpression)*
-    { return buildBinaryExpression("AndExpression", head, tail); }
+  = head:NotExpression tail:(_ '&&' _ NotExpression)* { return buildBinaryExpression("AndExpression", head, tail); }
 
 NotExpression
  = '!' _ expression:PrimaryExpression { return buildUnaryExpression("NotExpression", "!", expression); }
