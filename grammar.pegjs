@@ -66,10 +66,6 @@ ANDExpression
 NotExpression
  = '!' _ expression:PrimaryExpression { return buildUnaryExpression("NotExpression", "!", expression); }
   / expression:PrimaryExpression { return expression; }
-  
-PrimaryTerm
-  = component:Component { return component;}
-  / set:SetTerm { return set; }
 
 PrimaryExpression
   = '(' _ expression:Expression _ ')' { return expression; }
@@ -97,7 +93,7 @@ Keyword "keyword (file, namespace, class, function, variable)"
   / 'variable'
 
 Regex "regex"
-  = [-+/\*_<>=a-zA-Z\.!\(\)]+
+  = [-+/\*\$_<>=a-zA-Z\.!\(\)]+
 
 DefinitionOperator ":="
   = ":="
