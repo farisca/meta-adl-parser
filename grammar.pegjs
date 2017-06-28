@@ -86,7 +86,7 @@ Keyword "keyword (file, namespace, class, function, variable)"
   / 'variable'
 
 Regex "regex"
-  = [-+/\*\$_<>=a-zA-Z\.!\(\)]+
+  = [-+/\*\$_<>=a-zA-Z0-9\.\^!\(\)]+
 
 DefinitionOperator ":="
   = ":="
