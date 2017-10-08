@@ -91,8 +91,8 @@ _ "whitespace"
 Keyword "keyword (infile, namespace, class, classHierarchy, function, variable)"
   = 'infile'
   / 'namespace'
-  / 'class'
   / 'classHierarchy'
+  / 'class'
   / 'function'
   / 'variable'
 
