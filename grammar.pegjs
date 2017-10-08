@@ -88,10 +88,11 @@ Artifact "term"
 _ "whitespace"
   = [ \t\n\r]*
 
-Keyword "keyword (infile, namespace, class, function, variable)"
+Keyword "keyword (infile, namespace, class, classHierarchy, function, variable)"
   = 'infile'
   / 'namespace'
   / 'class'
+  / 'classHierarchy'
   / 'function'
   / 'variable'
 
